@@ -58,10 +58,23 @@ function Blog(props){
     setNewContent('')
   }
 
+  function deletePost(index){
+    const newTitles = props.title.filter((_, i) => i !== index);
+    const newDetails = props.details.filter((_, i) => i !== index);
+    const newDates = props.createDate.filter((_, i) => i !== index);
+    const newLikes = props.like.filter((_, i) => i !== index);
+
+    props.setTitle(newTitles);
+    props.setDetails(newDetails);
+    props.setCreateDate(newDates);
+    props.setLike(newLikes);
+  }
+
   return(
     <>
       {/* 타이틀 정렬하기 */}
-      <button onClick={()=>{
+      <button style={{margin: "20px 0 0 20px"}}
+      onClick={()=>{
         const sortedTitle = [... props.title].sort()
         props.setTitle(sortedTitle);
       }}>글 정렬하기</button>
@@ -69,24 +82,37 @@ function Blog(props){
       <div className='list'>
         {props.title.map((item, index)=>{
           return(
-            <div key={index}>
-              <h4 onClick={()=> handleTitle(index)}>
+            <div key={index} style={{borderBottom: "1px solid black"}}>
+              <h4 
+              onClick={()=> handleTitle(index)}
+              onMouseDown={(e) => {
+                e.preventDefault(); // 텍스트 선택 방지
+                }}>
                     {props.title[index]}
                 
-                <span onClick={(e)=>{
+                <span 
+                onClick={(e)=>{
                   {/* 이벤트 버블링 전이 막기 */}
                   e.stopPropagation()
                   const newLikes = [... props.like]
                   newLikes[index]++
                   props.setLike(newLikes)
+                  }}
+                onMouseDown={(e) => {
+                  e.preventDefault(); // 텍스트 선택 방지
                   }}>👍
                 </span>{props.like[index]} 
+                <button onClick={(e) => {
+                  e.stopPropagation();
+                  deletePost(index);
+                  }}>삭제</button>
               </h4>      
               <p>작성일 : {props.createDate[index]}</p>
             </div>  
           )
         })}           
       </div>
+      <div className="form">
       <input 
         onChange={(event)=>{setNewTitle(event.target.value)}}
         value={newTitle}
@@ -97,6 +123,7 @@ function Blog(props){
         value={newContent}
         type="text" placeholder="내용을 입력하세요"/>
       <button onClick={addPost}>등록하기</button>
+      </div>
     </>
   )
 }
