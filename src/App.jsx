@@ -16,9 +16,9 @@ function App() {
   ]);
 
   const [createDate, setCreateDate] = useState([
-    '2025-5-1',
-    '2025-6-1',
-    '2025-7-1',
+    '2025-05-01',
+    '2025-06-01',
+    '2025-07-01',
   ]);
 
   const [details, setDetails] = useState([

@@ -1,4 +1,10 @@
+import { useState } from "react";
+
 function Blog(props){
+  // 타이틀 저장 용 스테이트 선언
+  const [newTitle, setNewTitle] = useState('')
+  // 내용 저장 용 스테이트 선언
+  const [newContent, setNewContent] = useState('')
 
   // 제목 클릭 시 모달 보이기
   function handleTitle(index){
@@ -15,6 +21,42 @@ function Blog(props){
       props.setCurrentIndex(index);
     }
   } 
+
+  // 오늘 날짜를 생성해 주는 함수
+  function getCurrentDate(){
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0')
+    const day = String(today.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
+
+  // 글 등록 함수 만들기
+  function addPost(){
+    // 두 개의 입력상자가 비어있는지 확인
+    if(newTitle.trim() === ''){
+      alert('제목이 비어있어요')
+      return
+    }
+
+    if(newContent.trim() === ''){
+      alert('내용이 비어있어요')
+      return
+    }
+    // 타이틀과 내용을 각 배열에 추가
+    props.setTitle([newTitle, ...props.title])
+    props.setDetails([newContent, ...props.details])
+
+    // 오늘 날짜 생성 후 날짜 배열에도 추가
+    props.setCreateDate([getCurrentDate(), ...props.createDate])
+
+    // 좋아요 배열에도 추가
+    props.setLike([0, ...props.like])
+
+    setNewTitle('')
+    setNewContent('')
+  }
 
   return(
     <>
@@ -45,6 +87,16 @@ function Blog(props){
           )
         })}           
       </div>
+      <input 
+        onChange={(event)=>{setNewTitle(event.target.value)}}
+        value={newTitle}
+        type="text" placeholder="글 제목을 입력하세요" />
+      <br />
+      <input 
+        onChange={(e)=>{setNewContent(e.target.value)}}
+        value={newContent}
+        type="text" placeholder="내용을 입력하세요"/>
+      <button onClick={addPost}>등록하기</button>
     </>
   )
 }
